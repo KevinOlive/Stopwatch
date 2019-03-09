@@ -13,11 +13,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var elapsedTimeLabel: UILabel!
     @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var stopButton: UIButton!
-    @IBOutlet weak var resetButton: UIButton!
-    @IBOutlet weak var resumeButton: UIButton!
+	
     var timer : Timer = Timer.init()
     var startTime : Date = Date()
     var elapsedTime : TimeInterval = 0.0
+	
     enum TimerStatus {
         case running
         case paused
@@ -25,12 +25,12 @@ class ViewController: UIViewController {
     }
     var timerStatus : TimerStatus = .stopped
     
-    let resetValue : String = "0:00"
-//    var stopTime : NSDate
-    
+    let resetValue : String = "0:00.0"
+	
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+		resetTimer()
     }
 
     @IBAction func startButtonPressed(_ sender: UIButton) {
@@ -52,17 +52,27 @@ class ViewController: UIViewController {
     @IBAction func stopButtonPressed(_ sender: UIButton) {
         switch timerStatus {
         case .paused:
-            timerStatus = .stopped
-            elapsedTimeLabel.text = resetValue
-            elapsedTime = 0.0
+            resetTimer()
+				stopButton.setTitle("Stop", for: .normal)
         case .running:
             timerStatus = .paused
+				startButton.setTitle("Resume", for: .normal)
+				stopButton.setTitle("Reset", for: .normal)
         case .stopped:
             return
         }
         timer.invalidate()
     }
-    
+	
+	func resetTimer() {
+		timerStatus = .stopped
+		elapsedTimeLabel.text = resetValue
+		elapsedTime = 0.0
+		startButton.setTitle("Start", for: .normal)
+		stopButton.setTitle("Stop", for: .normal)
+
+	}
+	
     func startTimer() {
         
         timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(displayElapsedTime), userInfo: nil, repeats: true)
@@ -70,12 +80,12 @@ class ViewController: UIViewController {
     
     @objc func displayElapsedTime() {
         
-        let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .positional
-        formatter.allowedUnits = [ .minute, .second, .nanosecond ]
-        formatter.zeroFormattingBehavior = [ .pad ]
-        formatter.allowsFractionalUnits = true
-        
+//        let formatter = DateComponentsFormatter()
+//        formatter.unitsStyle = .positional
+//        formatter.allowedUnits = [ .minute, .second, .nanosecond ]
+//        formatter.zeroFormattingBehavior = [ .pad ]
+//        formatter.allowsFractionalUnits = true
+		
         let dateFormat = DateFormatter()
         dateFormat.dateFormat = "m:ss.S"
         
