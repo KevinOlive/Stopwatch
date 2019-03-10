@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     }
     var timerStatus : TimerStatus = .stopped
     
-    let resetValue : String = "0:00.0"
+    let resetValue : String = ""
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,10 +38,14 @@ class ViewController: UIViewController {
             // if paused and start is pressed, resume timer
         case .paused:
             startTime = Date() - elapsedTime
+				stopButton.setTitle("Stop", for: .normal)
+				startButton.isHidden = true
             // if stopped, reset timer
         case .stopped:
             startTime = Date()
             elapsedTime = 0.0
+				stopButton.isHidden = false
+				startButton.isHidden = true
         case .running:
             return
         }
@@ -58,6 +62,7 @@ class ViewController: UIViewController {
             timerStatus = .paused
 				startButton.setTitle("Resume", for: .normal)
 				stopButton.setTitle("Reset", for: .normal)
+				startButton.isHidden = false
         case .stopped:
             return
         }
@@ -70,7 +75,8 @@ class ViewController: UIViewController {
 		elapsedTime = 0.0
 		startButton.setTitle("Start", for: .normal)
 		stopButton.setTitle("Stop", for: .normal)
-
+		stopButton.isHidden = true
+		startButton.isHidden = false
 	}
 	
     func startTimer() {
@@ -99,3 +105,23 @@ class ViewController: UIViewController {
     }
 }
 
+@IBDesignable class MyButton: UIButton
+{
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		
+		updateCornerRadius()
+	}
+	
+	@IBInspectable var rounded: Bool = false {
+		didSet {
+			updateCornerRadius()
+		}
+	}
+	
+	func updateCornerRadius() {
+		layer.cornerRadius = rounded ? frame.size.height / 2 : 0
+		layer.borderWidth = 1
+		layer.masksToBounds = true
+	}
+}
